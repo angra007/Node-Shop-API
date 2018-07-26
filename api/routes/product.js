@@ -7,12 +7,16 @@ route.get ('/', (req, res, next) => {
     })
 })
 
-
-
-
 route.post ('/', (req, res, next) => {
+    
+    const product = {
+        name : req.body.name,
+        price : req.body.price
+    }
+
     res.status (200).json ( {
-        message : 'Handling Post Request to /products'
+        message : 'Handling Post Request to /products',
+        created : product
     })
 })
 

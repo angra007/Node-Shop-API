@@ -1,24 +1,27 @@
 const express = require ('express');
 const route = express.Router ();
 
-
-
 route.get ('/', (req, res, next) => {
     res.status (200).json ( {
         message : 'Orders were fetched'
     })
 })
 
-
 route.post ('/', (req, res, next) => {
+
+    var order = {
+        productID : req.body.productID,
+        quantity : req.body.quantity
+    }
+
     res.status (200).json ( {
-        message : 'Order was created'
+        message : 'Order was created',
+        created : order
     })
 })
 
 route.get ('/:id', (req, res, next) => {
     
-    console.log ('here')
     const id = req.params.id;
 
     if (id == 'special') {
