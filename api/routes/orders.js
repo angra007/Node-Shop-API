@@ -4,6 +4,7 @@ const route = express.Router ();
 const mongoose = require ('mongoose');
 const Order = require ('./../models/order')
 const Product = require ('./../models/product')
+var {authenticate} = require ('./../middleware/authenticate')
 
 route.get ('/', (req, res, next) => {
     
@@ -36,7 +37,7 @@ route.get ('/', (req, res, next) => {
     
 })
 
-route.post ('/', (req, res, next) => {
+route.post ('/', authenticate, (req, res, next) => {
 
     Product.findById (req.body.productID).exec ().then ( (product) => {
         
@@ -88,7 +89,7 @@ route.post ('/', (req, res, next) => {
     })
 });
 
-route.get ('/:id', (req, res, next) => {
+route.get ('/:id', authenticate, (req, res, next) => {
     
     const id = req.params.id;
 

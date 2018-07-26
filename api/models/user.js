@@ -11,7 +11,6 @@ var UserSchema =  mongoose.Schema ({
         minlength : 1,
         required : true,
         trim : true,
-        //unique : true,
         validate : {
             validator: validator.isEmail,
             message : '{VALUE} is not a valid email'
@@ -53,21 +52,23 @@ UserSchema.methods.generateAuthToken = function () {
 };
 
 UserSchema.statics.findByToken = function (token) {
+    
     var User = this
     var decoded;
     try {
         decoded = jwt.verify (token, "abc123")
+
+        return User.findOne ({
+            '_id': decoded._id,
+            'tokens.token' : token,
+            'tokens.access' : 'auth'
+        });
     }
     catch (e) {
-        
+        const error = new Error ('Invalid token');
+        error.status = 401;
+        return Promise.reject (error);
     }
-
-    console.log (decoded);
-    return User.findOne ({
-        '_id': decoded._id,
-        'tokens.token' : token,
-        'tokens.access' : 'auth'
-    });
 }
 
 // UserSchema.statics.findByCredentials = function (email, password) {

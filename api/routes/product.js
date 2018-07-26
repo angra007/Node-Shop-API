@@ -3,6 +3,7 @@ const route = express.Router ();
 
 const mongoose = require ('mongoose');
 const Product = require ('./../models/product')
+var {authenticate} = require ('./../middleware/authenticate')
 
 route.get ('/', (req, res, next) => {
     
@@ -31,7 +32,7 @@ route.get ('/', (req, res, next) => {
     })
 })
 
-route.post ('/', (req, res, next) => {
+route.post ('/',authenticate, (req, res, next) => {
     
     var product = new Product ({
         _id :  new mongoose.Types.ObjectId (),
@@ -61,7 +62,7 @@ route.post ('/', (req, res, next) => {
     });
 })
 
-route.get ('/:id', (req, res, next) => {
+route.get ('/:id', authenticate,(req, res, next) => {
     const id = req.params.id;
     console.log (id);
     Product.findById (id).exec ().then ( (result) => {
@@ -71,7 +72,7 @@ route.get ('/:id', (req, res, next) => {
     })
 })
 
-route.patch ('/:id', (req, res, next) => {
+route.patch ('/:id', authenticate,(req, res, next) => {
     const id = req.params.id;
     
     const updateOps = {}
@@ -88,7 +89,7 @@ route.patch ('/:id', (req, res, next) => {
     })
 })
 
-route.delete ('/:id', (req, res, next) => {
+route.delete ('/:id', authenticate,(req, res, next) => {
     const id = req.params.id;
     Product.remove ( {
         _id : id
