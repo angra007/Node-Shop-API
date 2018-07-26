@@ -7,8 +7,8 @@ const mongoose = require ('mongoose');
 
 
 const productRoutes = require ('./api/routes/product');
-const orderRoutes = require ('./api/routes/orders')
-
+const orderRoutes = require ('./api/routes/orders');
+const loginRoutes = require ('./api/routes/users');
 
 mongoose.connect ('mongodb+srv://angraankit:' 
     + 'JcnLujrDwsRK9VWm' +
@@ -41,9 +41,8 @@ app.use ((res, req, next) => {
 })
 
 app.use ('/product',productRoutes);
-app.use ('/order',orderRoutes)
-
-
+app.use ('/order',orderRoutes);
+app.use ('/auth',loginRoutes);
 
 
 app.use ((req, res, next) => {

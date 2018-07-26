@@ -9,10 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.2.5",
     "morgan": "^1.9.0",
-    "nodemon": "^1.18.3"
+    "nodemon": "^1.18.3",
+    "validator": "^10.4.0"
   }
 }
