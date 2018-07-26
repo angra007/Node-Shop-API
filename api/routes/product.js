@@ -6,8 +6,26 @@ const Product = require ('./../models/product')
 
 route.get ('/', (req, res, next) => {
     
-    Product.find ().then ( (result) => {
-        res.status (200).json (result)
+    Product.find ()
+        .select ('name price _id')
+        .then ( (result) => {
+
+        const response = {
+            count : result.length,
+            products : result.map ( (doc) => {
+                return {
+                    name : doc.name,
+                    price : doc.price,
+                    _id : doc._id,
+                    request : {
+                        type : 'GET',
+                        url :'http://localhost:3000/product/' + doc._id
+                    }
+                }
+            })
+        }
+
+        res.status (200).json (response)
     }).catch ((error) => {
         res.status (500).json (error)
     })
@@ -21,11 +39,20 @@ route.post ('/', (req, res, next) => {
         price : req.body.price
     });
 
-    product.save ().then ( (result) => {
-        res.status (200).json ( {
-            message : 'Success',
-            created : product
-        })
+    product.save ().then ( (doc) => {
+        
+        const response = {
+            status : 201,
+            name : doc.name,
+            price : doc.price,
+             _id : doc._id,
+            request : {
+                type : 'GET',
+                url :'http://localhost:3000/product/' + doc._id
+            }
+        }
+        
+        res.status (201).json (response)
     }).catch ((error) => {
         console.log ('Error : ' + error)
         res.status (500).json ( {
