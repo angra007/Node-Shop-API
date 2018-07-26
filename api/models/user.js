@@ -71,9 +71,12 @@ UserSchema.statics.findByToken = function (token) {
     }
 }
 
-// UserSchema.statics.findByCredentials = function (email, password) {
+UserSchema.statics.findByCredentials = function (email, password) {
+    var User = this
+
+
     
-// }
+}
 
 UserSchema.pre ('save', function (next) {
     var user = this;
