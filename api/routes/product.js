@@ -1,68 +1,81 @@
 const express = require ('express');
 const route = express.Router ();
 
+const mongoose = require ('mongoose');
+const Product = require ('./../models/product')
+
 route.get ('/', (req, res, next) => {
-    res.status (200).json ( {
-        message : 'Handling Get Request to /products'
+    
+    Product.find ().then ( (result) => {
+        res.status (200).json (result)
+    }).catch ((error) => {
+        res.status (500).json (error)
     })
 })
 
 route.post ('/', (req, res, next) => {
     
-    const product = {
+    var product = new Product ({
+        _id :  new mongoose.Types.ObjectId (),
         name : req.body.name,
         price : req.body.price
-    }
+    });
 
-    res.status (200).json ( {
-        message : 'Handling Post Request to /products',
-        created : product
-    })
+    product.save ().then ( (result) => {
+        res.status (200).json ( {
+            message : 'Success',
+            created : product
+        })
+    }).catch ((error) => {
+        console.log ('Error : ' + error)
+        res.status (500).json ( {
+            error : error,
+        })
+    });
 })
 
 route.get ('/:id', (req, res, next) => {
-    
     const id = req.params.id;
-
-    if (id == 'special') {
-        res.status (200).json ( {
-            message : 'Handling Special ID'
-        })
-    }
-    else {
-        res.status (200).json ( {
-            message : 'Handling Other ID'
-        })
-    }
+    console.log (id);
+    Product.findById (id).exec ().then ( (result) => {
+        res.status (200).json (result)
+    }).catch ( (error) => {
+        res.status (500).json (error)
+    })
 })
-
 
 route.patch ('/:id', (req, res, next) => {
     const id = req.params.id;
-    if (id == 'special') {
-        res.status (200).json ( {
-            message : 'Handling Special ID'
-        })
+    
+    const updateOps = {}
+    console.log (req.body)
+    for (const ops of req.body) {
+        updateOps [ops.propName] = ops.value;
     }
-    else {
-        res.status (200).json ( {
-            message : 'Handling Other ID'
-        })
-    }   
+    Product.update ({
+        _id : id
+    }, { $set : updateOps}).then ( (result) => {
+        res.status (200).json (result)
+    }).catch ( (error) => {
+        res.status (500).json (error)
+    })
 })
 
 route.delete ('/:id', (req, res, next) => {
     const id = req.params.id;
-    if (id == 'special') {
+    Product.remove ( {
+        _id : id
+    }).then ( (result) => {
         res.status (200).json ( {
-            message : 'Handling Special ID'
+            message : 'Successfully Deleted',
+            product : result
         })
-    }
-    else {
-        res.status (200).json ( {
-            message : 'Handling Other ID'
+    }).catch ((error) => {
+        res.status (404).json ({
+            status : 404,
+            message : error.message
         })
-    } 
+    })
 })
 
 module.exports = route;
